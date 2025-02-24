@@ -56,7 +56,7 @@ const Vehicle = sequelize.define('Vehicle', {
         allowNull: false,
     },
     type: {
-        type: DataTypes.ENUM('car', 'bike'),
+        type: DataTypes.STRING,
         allowNull: false,
     },
     licenseNumber: {

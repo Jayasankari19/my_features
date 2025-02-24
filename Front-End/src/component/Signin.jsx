@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
-import { FaSmile } from 'react-icons/fa';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -20,50 +18,55 @@ const Register = () => {
     e.preventDefault();
 
     if (!age) {
-      toast.error('Age is required');
+      toast.error('❌ Age is required', { position: "top-center" });
       return;
     }
-    // Validation checks...
+
+    if (password !== confirmPassword) {
+      toast.error('❌ Passwords do not match!', { position: "top-center" });
+      return;
+    }
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', {
         name,
         email,
-       "phone":mobileNumber,
+        phone: mobileNumber,
         password,
         age,
         gender,
       });
 
-      console.log('Registration response:', response.data);
+      console.log("🔍 Full response:", response);
+      console.log("✅ response.status:", response.status);
+      console.log("✅ response.data:", response.data);
 
-      if (response.data.success) {
-        toast.success(
-          <div className="flex items-center">
-            <FaSmile className="mr-2 text-2xl text-yellow-500" /> Smile icon
-            <span>User registered successfully</span>
-          </div>,
-          {
-            className: 'bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold shadow-lg',
-          }
-        );
+      if (response.status === 201 || response.data.success) {
+        toast.success('✅ User registered successfully!', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          style: { backgroundColor: "green", color: "white" },
+        });
 
         setTimeout(() => {
           navigate('/login');
-        }, 2000);
+        }, 3000);
       } else {
-        toast.error(response.data.message || 'Registration failed.');
+        toast.error(response.data.message || 'Registration failed.', { position: "top-center" });
       }
     } catch (error) {
-      console.error('Registration error:', error);
-      toast.error('Registration failed. Please try again.');
+      console.error('❌ Registration error:', error);
+      toast.error('Registration failed. Please try again.', { position: "top-center" });
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6">
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-5xl">
-        {/* Left Side - Image */}
         <div className="w-3/5 hidden md:block">
           <img
             src="https://img.freepik.com/premium-vector/person-use-autonomous-online-car-sharing-service-man-near-smartphone-screen-with-route-points-location-car-city-map-online-ordering-taxi-rent-auto-group-people-sharing-auto_458444-912.jpg?w=1800"
@@ -72,7 +75,6 @@ const Register = () => {
           />
         </div>
 
-        {/* Right Side - Form */}
         <div className="w-full md:w-2/5 p-6">
           <h2 className="text-xl font-semibold text-center mb-4">Create an Account</h2>
           <form onSubmit={handleRegister} className="space-y-4">
@@ -116,16 +118,14 @@ const Register = () => {
               required
               className="w-full p-2 border border-gray-300 rounded"
             />
-
-<input
-  type="number"
-  placeholder="Age"
-  value={age}
-  onChange={(e) => setAge(e.target.value)}
-  required
-  className="w-full p-2 border border-gray-300 rounded"
-/>
-
+            <input
+              type="number"
+              placeholder="Age"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
             <label className="block text-gray-700">Gender:</label>
             <select
               value={gender}

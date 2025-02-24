@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
- // Importing smiley icon from react-icons
- import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
- import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
- 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'; // or other icons you need
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
- 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -23,39 +20,42 @@ const Login = () => {
         password,
       });
 
-      console.log('Login Response:', response.data); // Debugging
+      console.log('🟢 Login Response:', response.data); // Debugging
 
       if (response.data.message === 'Login successful!') {
-        const { userId, role } = response.data;
+        const { userId, token } = response.data;
         localStorage.setItem('userId', userId);
+        localStorage.setItem('token', token); // Save JWT token
 
-        // Toast with smiley emoji after successful login
-        toast.success(
-          <div className="flex items-center">
-            <FaSmile className="mr-2 text-2xl text-yellow-500" /> {/* Smile icon */}
-            <span>Login successful!</span>
-          </div>,
-          {
-            position: 'top-center', // Ensure position is set correctly
-            className: 'bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold shadow-lg',
-          }
-        );
+        console.log("🔹 Token stored:", localStorage.getItem('token'));
+        console.log("🔹 UserId stored:", localStorage.getItem('userId'));
 
-        // Navigate after successful login
-        if (role === 'ridee') {
-          navigate('/car-or-bike-selection');
-        } 
+        // ✅ Show success toast message
+        toast.success("✅ Login successful!", {
+          position: "top-center",
+          autoClose: 3000, // Keeps toast visible for 3 seconds
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          className: "bg-green-500 text-white font-bold text-lg p-4 rounded-lg shadow-lg"
+        });
+
+        // ✅ Navigate to another page **AFTER** showing the toast
+        setTimeout(() => {
+          navigate('/car-or-bike-selection'); // Change '/dashboard' to your desired route
+        }, 3000); // 3-second delay to allow the toast message to be seen
+
       } else {
         toast.error(response.data.message || 'Invalid email or password.', {
-          position: 'top-center', // Ensuring position is correct
-          className: 'bg-red-500 text-white py-3 px-6 rounded-lg text-lg font-semibold shadow-lg',
+          position: "top-center",
         });
       }
     } catch (error) {
-      console.error('Login Error:', error.response ? error.response.data : error);
+      console.error('🔴 Login Error:', error.response ? error.response.data : error);
       toast.error('Login failed. Please try again.', {
-        position: 'top-center', // Ensuring position is correct
-        className: 'bg-red-500 text-white py-3 px-6 rounded-lg text-lg font-semibold shadow-lg',
+        position: "top-center",
       });
     }
   };
@@ -94,7 +94,9 @@ const Login = () => {
               </div>
             </div>
             
-            <button type="submit" className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800">Login</button>
+            <button type="submit" className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800">
+              Login
+            </button>
           </form>
           <p className="mt-4 text-center text-gray-600">
             Don't have an account? <a href="/register" className="text-blue-600">Sign up</a>
@@ -102,7 +104,8 @@ const Login = () => {
         </div>
         {/* Right Section */}
         <div className="w-1/2 flex justify-center items-center bg-gray-100">
-          <img src="https://thumbs.dreamstime.com/b/man-woman-riding-yellow-motor-scooter-city-couple-moped-flat-style-urban-vehicle-vector-illustration-224240855.jpg" alt="Login" className="w-full h-full object-cover" />
+          <img src="https://thumbs.dreamstime.com/b/man-woman-riding-yellow-motor-scooter-city-couple-moped-flat-style-urban-vehicle-vector-illustration-224240855.jpg" 
+               alt="Login" className="w-full h-full object-cover" />
         </div>
       </div>
       <ToastContainer />

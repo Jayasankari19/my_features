@@ -34,3 +34,31 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: 'Login failed' });
     }
 };
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: { email }, include: Auth });
+
+        if (!user || !(await bcrypt.compare(password, user.Auth.passwordHash))) {
+            console.log("❌ Invalid login attempt");
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        console.log("✅ Login successful for user:", user.id);
+
+        // Send token and success response
+        res.json({
+            message: "Login successful!", 
+            token, 
+            userId: user.id, 
+            role: user.role || "ridee" // Ensure role is sent
+        });
+
+    } catch (error) {
+        console.error("❌ Login failed:", error);
+        res.status(500).json({ error: 'Login failed', details: error.message });
+    }
+};

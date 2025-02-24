@@ -16,7 +16,7 @@ const Navbar = () => {
 
   // Change navbar color based on the current route
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
-  const navbarBg = isHomePage ? "bg-gray-200" : "bg-white"; // Blue for home, white for other pages
+  const navbarBg = isHomePage ? "bg-" : "bg-white"; // Blue for home, white for other pages
   const textColor = isHomePage ? "text-gray-800" : "text-gray-900"; // Adjust text color accordingly
 
   return (
@@ -26,17 +26,17 @@ const Navbar = () => {
         <div className="flex items-center">
           <img 
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxd1qxTdtZ0f-uAjQeylhy2H8V0DHOquovAcXhJvSis8lAfIEn2SgfWsikfkVzXb-Y1C4&usqp=CAU" 
-            alt="Logo" className="h-10 w-10 mr-2" 
+            alt="Logo" className="h-15 w-20 mr-2 ml-10" 
           />
-          <span className={`text-xl font-bold ${textColor}`}>Ride-Sharing</span>
+          <span className={`text-2xl font-bold ml-2 ${textColor}`}>Ride-Sharing</span>
         </div>
 
         {/* Right Side - Links */}
         <div className="hidden md:flex space-x-6">
           <Link to="/home" className={`flex items-center space-x-2 hover:text-gray-500 ${textColor} transition duration-300`}>
-            <House />
+          <House className="w-10 h-8" strokeWidth={2.5} />
             <span className="flex items-center">
-              <i className="fas fa-home mr-1"></i> Home
+              <i className="fas fa-home mr-1 "></i><span className="text-2xl font-bold"> Home</span>
             </span>
           </Link>
 
@@ -72,8 +72,8 @@ const Navbar = () => {
             </>
           ) : (
             <Link to="/login" className={`flex items-center space-x-2 hover:text-gray-500 ${textColor} transition duration-300`}>
-              <LogIn className="w-5 h-5" />
-              <span>Login</span>
+              <LogIn classNama="w-12 h-20" strokeWidth={3.5}/>
+              <span className="text-2xl font-bold mr-10">Login</span>
             </Link>
           )}
         </div>
